@@ -1,0 +1,35 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["evidence"]
+}
+
+model Evidence {
+  id            String   @id @default(uuid())
+  fileName      String   @map("file_name")
+  originalName  String   @map("original_name")
+  fileSize      BigInt   @map("file_size")
+  mimeType      String   @map("mime_type")
+  bucket        String
+  objectKey     String   @map("object_key")
+  uploadedBy    String   @map("uploaded_by")
+  organizationId String? @map("organization_id")
+  assessmentId  String?  @map("assessment_id")
+  questionId    String?  @map("question_id")
+  metadata      Json?    @default("{}")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("evidence")
+  @@index([uploadedBy])
+  @@index([organizationId])
+  @@index([assessmentId])
+  @@index([questionId])
+  @@schema("evidence")
+}
+
